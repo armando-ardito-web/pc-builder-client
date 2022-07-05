@@ -9,6 +9,8 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { LoginComponent } from './login/login.component';
 import { SearchComponent } from './search/search.component';
 
+import { VendorService } from './vendor.service';
+
 @NgModule({
   declarations: [
     AppComponent,
