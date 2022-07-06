@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import {AfterViewInit, ElementRef, ViewChild} from '@angular/core';
-
-
-import { FormGroup, FormControl } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-search',
@@ -12,7 +9,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 })
 export class SearchComponent implements OnInit {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private route:ActivatedRoute) { }
 
   public endpoint = "http://localhost:8000/api"; // endpoint URL
   httpOptions = {
@@ -21,13 +18,30 @@ export class SearchComponent implements OnInit {
     })
   }
   name:any;
-
+  r:any;
+  searchTerm:String="";
 
   ngOnInit(): void {
-    let input = document.querySelector("#input");
+
+    //quando ci sono i params messi
+    this.route.queryParamMap.subscribe((params)=>{
+
+      let p = params.get("searchTerm");
+      console.log("I PARAMS SONO "+ p);//DEBUG
+      if (p!=null){
+        if(p.toString()!=""){
+        let s = p.toString(); //DA SANIFICARE
+
+        this.httpClient.post(this.endpoint+'/vendor-search',{'name':s}).subscribe((response=>{
+          console.log(response); //DEBUG
+          this.r=response;
+        }));
+      }}
+
+    });
   }
 
-r:any;
+
   ricerca(s: String): any{
     this.httpClient
         .post(this.endpoint+'/vendor-search',{'name':s})
